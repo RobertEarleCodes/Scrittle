@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: scrittle
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: STRIPE_PUBLIC_KEY
+        scope: build
+      - key: STRIPE_SECRET_KEY
+        scope: build
+      - key: DOMAIN
+        value: https://www.scrittle.co.uk
+      - key: PORT
+        value: 3000
+    customDomains:
+      - name: www.scrittle.co.uk
+        type: cname
+      - name: scrittle.co.uk
+        type: redirect
+        redirectTo: www.scrittle.co.uk
