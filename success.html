@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Pickup Edge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="success">
+    <div class="success-container">
+        <div class="success-checkmark">✓</div>
+        <h1 class="success-title">Order Confirmed</h1>
+        <p class="success-message">Thank you for your purchase.</p>
+        <p class="success-details">Your Pickup Edge Hangboard will be shipped via Royal Mail.</p>
+        <a href="index.html" class="success-link">Return to Home</a>
+    </div>
+
+    <script>
+        // Get API base URL dynamically
+        function getApiBase() {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:3000';
+            }
+            return window.location.origin;
+        }
+
+        const API_BASE = getApiBase();
+
+        // Get session ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get('session_id');
+
+        // Clear cart from localStorage
+        localStorage.removeItem('pickup_edge_cart');
+        console.log('✓ Cart cleared after payment');
+
+        // Save order for fulfillment
+        if (sessionId) {
+            saveOrder(sessionId);
+        }
+
+        async function saveOrder(sessionId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/save-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId,
+                        customerEmail: 'customer@email.com',
+                        shippingPostcode: '',
+                        shippingMethod: '',
+                        amount: 3550
+                    })
+                });
+
+                const data = await response.json();
+                console.log('✓ Order saved for fulfillment:', data);
+            } catch (error) {
+                console.error('Error saving order:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Pickup Edge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="cart-page">
+    <header class="product-header">
+        <a href="product.html" class="product-logo">← Back</a>
+        <h1 class="cart-title">Your Cart</h1>
+    </header>
+
+    <main class="cart-container">
+        <div class="cart-content">
+            <section id="cart-items" class="cart-items">
+                <!-- Items will be populated by JavaScript -->
+            </section>
+
+            <section class="checkout-section">
+                <div class="checkout-form">
+                    <h2>Shipping & Payment</h2>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postcode">UK Postcode</label>
+                        <input type="text" id="postcode" placeholder="e.g., S13 9AQ" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shipping">Shipping Method</label>
+                        <select id="shipping" required>
+                            <option value="">Select shipping option...</option>
+                        </select>
+                    </div>
+
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">£0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span id="shipping-cost">£0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="total">£0.00</span>
+                        </div>
+                    </div>
+
+                    <button class="checkout-btn" id="checkout-btn">Proceed to Payment</button>
+                    <a href="product.html" class="continue-shopping">Continue Shopping</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Pickup Edge</p>
+    </footer>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="cart-checkout.js"></script>
+</body>
+</html>

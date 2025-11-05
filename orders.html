@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders to Fulfill - Pickup Edge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body.admin {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 2rem;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            margin-bottom: 3rem;
+        }
+
+        .admin-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .admin-header p {
+            color: #b3b3b3;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .orders-table thead {
+            background-color: #1a1a1a;
+            border-bottom: 2px solid #2a2a2a;
+        }
+
+        .orders-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #ffffff;
+            border-right: 1px solid #2a2a2a;
+        }
+
+        .orders-table th:last-child {
+            border-right: none;
+        }
+
+        .orders-table tbody tr {
+            border-bottom: 1px solid #2a2a2a;
+            transition: background-color 0.3s ease;
+        }
+
+        .orders-table tbody tr:hover {
+            background-color: #1a1a1a;
+        }
+
+        .orders-table td {
+            padding: 1rem;
+            border-right: 1px solid #2a2a2a;
+            color: #b3b3b3;
+            font-size: 0.95rem;
+        }
+
+        .orders-table td:last-child {
+            border-right: none;
+        }
+
+        .order-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #ffffff;
+            word-break: break-all;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background-color: #2a2a2a;
+            color: #ffd700;
+        }
+
+        .status-fulfilled {
+            background-color: #1a3a1a;
+            color: #00ff00;
+        }
+
+        .status-shipped {
+            background-color: #1a2a3a;
+            color: #00bfff;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #2a2a2a;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #b3b3b3;
+        }
+
+        .refresh-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #b3b3b3;
+        }
+    </style>
+</head>
+<body class="admin">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Orders to Fulfill</h1>
+            <p>Manage all customer orders</p>
+        </div>
+
+        <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh Orders</button>
+
+        <div id="orders-container">
+            <div class="empty-state">Loading orders...</div>
+        </div>
+    </div>
+
+    <script>
+        // Get API base URL dynamically
+        function getApiBase() {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:3000';
+            }
+            return window.location.origin;
+        }
+
+        const API_BASE = getApiBase();
+
+        document.addEventListener('DOMContentLoaded', loadOrders);
+
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${API_BASE}/api/orders`);
+                const data = await response.json();
+                const orders = data.orders || [];
+
+                console.log('Orders loaded:', orders);
+
+                const container = document.getElementById('orders-container');
+
+                if (orders.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No orders yet</div>';
+                    return;
+                }
+
+                let html = `
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Email</th>
+                                <th>Postcode</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                orders.forEach(order => {
+                    const date = new Date(order.date).toLocaleDateString();
+                    html += `
+                        <tr>
+                            <td><span class="order-id">${order.id}</span></td>
+                            <td>${order.email}</td>
+                            <td>${order.postcode}</td>
+                            <td>£${(order.amount / 100).toFixed(2)}</td>
+                            <td>${date}</td>
+                            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn" onclick="updateStatus('${order.id}', 'fulfilled')">Mark Fulfilled</button>
+                                    <button class="action-btn" onclick="updateStatus('${order.id}', 'shipped')">Mark Shipped</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('orders-container').innerHTML = `<div class="empty-state">Error loading orders: ${error.message}</div>`;
+            }
+        }
+
+        async function updateStatus(orderId, newStatus) {
+            try {
+                const response = await fetch(`${API_BASE}/api/update-order-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId,
+                        status: newStatus
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Order updated:', data);
+                loadOrders();
+            } catch (error) {
+                console.error('Error updating order:', error);
+                alert('Error updating order: ' + error.message);
+            }
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadOrders, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "STRIPE_PUBLIC_KEY": {
+      "description": "Stripe publishable key (pk_live_...)",
+      "required": true
+    },
+    "STRIPE_SECRET_KEY": {
+      "description": "Stripe secret key (sk_live_...)",
+      "required": true
+    },
+    "STRIPE_WEBHOOK_SECRET": {
+      "description": "Stripe webhook secret",
+      "required": false
+    },
+    "DOMAIN": {
+      "description": "Your production domain (https://yourdomain.com)",
+      "required": true
+    },
+    "PORT": {
+      "description": "Server port",
+      "value": "3000",
+      "required": true
+    }
+  }
+}
