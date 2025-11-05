@@ -12,7 +12,29 @@
 <body class="splash">
     <div class="splash-container">
         <h1 class="splash-text">Scrittle.</h1>
-        <a href="product.html" class="cta-button">Explore</a>
+        <a href="product.html" class="cta-button" id="explore-btn">Explore</a>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const exploreBtn = document.getElementById('explore-btn');
+            
+            exploreBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                const splash = document.querySelector('.splash');
+                const container = document.querySelector('.splash-container');
+                
+                // Add slide-up animation
+                splash.classList.add('slide-up');
+                container.classList.add('slide-up-content');
+                
+                // Navigate after animation completes
+                setTimeout(() => {
+                    window.location.href = 'product.html';
+                }, 800);
+            });
+        });
+    </script>
 </body>
 </html>

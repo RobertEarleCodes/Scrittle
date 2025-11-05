@@ -22,6 +22,8 @@ function attachAddToCartListener() {
 
 function addToCart() {
     const cart = getCart();
+    const btn = document.getElementById('add-to-cart-btn');
+    
     cart.push({
         id: PRODUCT.id,
         name: PRODUCT.name,
@@ -30,6 +32,23 @@ function addToCart() {
     });
     saveCart(cart);
     updateCartCount();
+    
+    // Trigger glow animation on button
+    if (btn) {
+        btn.classList.add('glow');
+        setTimeout(() => {
+            btn.classList.remove('glow');
+        }, 800);
+    }
+    
+    // Trigger glow animation on cart count badge
+    const cartCount = document.getElementById('cart-count');
+    if (cartCount) {
+        cartCount.classList.add('glow');
+        setTimeout(() => {
+            cartCount.classList.remove('glow');
+        }, 1000);
+    }
 }
 
 function updateCartCount() {
