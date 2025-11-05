@@ -71,6 +71,9 @@ app.post('/api/create-checkout-session', async (req, res) => {
         const shippingCost = ROYAL_MAIL_RATES[shippingMethod].price;
         const shippingName = ROYAL_MAIL_RATES[shippingMethod].name;
 
+        // Get domain from request origin or environment variable
+        const domain = req.get('origin') || process.env.DOMAIN || 'http://localhost:3000';
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
@@ -99,8 +102,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
             ],
             mode: 'payment',
             customer_email: customerEmail,
-            success_url: `${process.env.DOMAIN || 'http://localhost:3000'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.DOMAIN || 'http://localhost:3000'}/cart.html`,
+            success_url: `${domain}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${domain}/cart.html`,
             metadata: {
                 shippingPostcode,
                 shippingMethod,
