@@ -37,6 +37,18 @@
         localStorage.removeItem('pickup_edge_cart');
         console.log('✓ Cart cleared after payment');
 
+        // Add glow effect to cart badge
+        function addCartGlow() {
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                cartCount.classList.add('glow');
+                console.log('✓ Cart glow effect activated');
+            }
+        }
+
+        // Add glow effect when page loads
+        window.addEventListener('load', addCartGlow);
+
         // Save order for fulfillment
         if (sessionId) {
             saveOrder(sessionId);

@@ -155,6 +155,7 @@ async function proceedToCheckout() {
     const email = document.getElementById('email').value.trim();
     const postcode = document.getElementById('postcode').value.trim();
     const shippingIdx = document.getElementById('shipping').value;
+    const checkoutBtn = document.getElementById('checkout-btn');
     
     // Validation
     if (cart.length === 0) {
@@ -189,6 +190,10 @@ async function proceedToCheckout() {
     }
     
     try {
+        // Add processing animation to button
+        checkoutBtn.classList.add('processing');
+        checkoutBtn.disabled = true;
+        
         console.log('Creating checkout session...');
         
         const response = await fetch(`${API_BASE}/api/create-checkout-session`, {
@@ -205,11 +210,15 @@ async function proceedToCheckout() {
         const data = await response.json();
         
         if (!response.ok) {
+            checkoutBtn.classList.remove('processing');
+            checkoutBtn.disabled = false;
             alert('Error: ' + (data.error || 'Unknown error'));
             return;
         }
         
         if (!data.sessionId) {
+            checkoutBtn.classList.remove('processing');
+            checkoutBtn.disabled = false;
             alert('Error: No session ID received');
             return;
         }
@@ -222,10 +231,14 @@ async function proceedToCheckout() {
         
         if (error) {
             console.error('Stripe error:', error);
+            checkoutBtn.classList.remove('processing');
+            checkoutBtn.disabled = false;
             alert('Payment error: ' + error.message);
         }
     } catch (error) {
         console.error('Checkout error:', error);
+        checkoutBtn.classList.remove('processing');
+        checkoutBtn.disabled = false;
         alert('Error: ' + error.message);
     }
 }
