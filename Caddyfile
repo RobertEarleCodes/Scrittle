@@ -1,0 +1,7 @@
+www.scrittle.co.uk {
+    reverse_proxy localhost:3000
+}
+
+scrittle.co.uk {
+    redir https://www.scrittle.co.uk{uri}
+}
